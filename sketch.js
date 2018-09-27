@@ -12,9 +12,9 @@ var score;
 var n;
 
 var scene = 1;
-var sampleTake = 2;
-var picSize = 5;
-var whichPic = 0;
+var sampleTake = 10;
+var picSize = 6;
+var whichPic = 1;
 var finished = false;
 
 function setup() {
@@ -169,14 +169,14 @@ function eliminateTrials(){
 		var topSamplePos = [];
 		for (var i=0; i<sampleTake; i+=1){
 			topSampleScore.push(0);
-			topSamplePos.push(0);
+			topSamplePos.push(-1);
 		}
 		for (var i=0; i<100; i+=1){
 			for (var j=0; j<sampleTake; j+=1){
 				if (score[i]>=topSampleScore[j]){
 					for (var k=j+1; k<sampleTake; k+=1){
-						topSampleScore[k] = topSampleScore[k-1];
-						topSamplePos[k] = topSamplePos[k-1];
+							topSampleScore[k] = topSampleScore[k-1];
+							topSamplePos[k] = topSamplePos[k-1];
 					}
 					topSampleScore[j] = score[i];
 					topSamplePos[j] = i;
@@ -184,6 +184,8 @@ function eliminateTrials(){
 				}
 			}
 		}
+		print(topSampleScore);
+		print(topSamplePos);
 		for (var i=0; i<sampleTake; i+=1){
 			partTrials.push(trials[topSamplePos[i]]);
 		}
