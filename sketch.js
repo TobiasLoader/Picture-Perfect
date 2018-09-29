@@ -17,6 +17,11 @@ var picSize = 6;
 var whichPic = 1;
 var finished = false;
 
+var partTrials;
+var partScores;
+var topSampleScore;
+var topSamplePos;
+
 function setup() {
   W = windowWidth;
 	H = windowHeight;
@@ -97,6 +102,11 @@ function setup() {
 		score.push(0);
 	}
 	
+	partTrials = [];
+	partScores = [];
+	topSampleScore = [];
+	topSamplePos = [];
+		
   canvas = createCanvas(W, H);
   
 }
@@ -162,27 +172,23 @@ function flipBinary(current){
 }
 function eliminateTrials(){
 	if (!finished){
-		var partTrials = [];
-		var partScores = [];
-		var newTrialNum = 0;
-		var topSampleScore = [];
-		var topSamplePos = [];
+		partScores = [];
+		partTrials = [];
+		topSampleScore = [];
+		topSamplePos = [];
+
 		for (var i=0; i<sampleTake; i+=1){
 			topSampleScore.push(0);
 			topSamplePos.push(-1);
 		}
-		for (var i=0; i<100; i+=1){
-			for (var j=0; j<sampleTake; j+=1){
-				if (score[i]>=topSampleScore[j]){
-					for (var k=j+1; k<sampleTake; k+=1){
-							topSampleScore[k] = topSampleScore[k-1];
-							topSamplePos[k] = topSamplePos[k-1];
-					}
+		for (var j=0; j<sampleTake; j+=1){
+			for (var i=0; i<score.length; i+=1){
+				if (score[i] >= topSampleScore[j]){
 					topSampleScore[j] = score[i];
 					topSamplePos[j] = i;
-					break;
 				}
 			}
+			score.splice(topSamplePos[j],1);
 		}
 		print(topSampleScore);
 		print(topSamplePos);
@@ -190,13 +196,14 @@ function eliminateTrials(){
 			partTrials.push(trials[topSamplePos[i]]);
 		}
 		partScores = topSampleScore;
+		print(topSamplePos)
 		
 		avg = 0;
 		for (var i=0; i<topSampleScore.length; i+=1){
 			avg += topSampleScore[i];
 		}
 		avg/=sampleTake;
-		
+
 		trials = partTrials;
 		var newTrials = [];
 		for (var i=0; i<sampleTake; i+=1){
