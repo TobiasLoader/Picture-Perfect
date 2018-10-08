@@ -11,11 +11,11 @@ var trials;
 var score;
 var n;
 
-var scene = 1;
-var sampleTake = 10;
-var picSize = 6;
-var whichPic = 1;
-var finished = false;
+var scene;
+var sampleTake;
+var picSize;
+var whichPic;
+var finished;
 
 var partTrials;
 var partScores;
@@ -23,8 +23,35 @@ var topSampleScore;
 var topSamplePos;
 
 function setup() {
+	initVar();
+	whichPic = 1;
+	canvas = createCanvas(W, H);
+}
+
+function draw() {
+	// draw in here
+	background(200,230,255);
+	switch (scene){
+		case 1: menu(); break;
+		case 2: displayTrials(trials); break;
+	} 
+	if (finished && scene === 2){
+		fill(200,230,255,200);
+		noStroke();
+		rect(0,0,W,H);
+		restartArrow();
+	}	
+}
+
+function initVar(){
+	angleMode(DEGREES);
   W = windowWidth;
 	H = windowHeight;
+	
+	scene = 1;
+	sampleTake = 10;
+	picSize = 6;
+	finished = false;
 	
 	n = 10;
 	if (W>H){
@@ -107,19 +134,22 @@ function setup() {
 	topSampleScore = [];
 	topSamplePos = [];
 		
-  canvas = createCanvas(W, H);
-  
+
 }
 
-function draw() {
-	// draw in here
-	background(240);
-	switch (scene){
-		case 1: menu(); break;
-		case 2: displayTrials(trials); break;
-// 		case 3: displayTrials(partTrials); break;
+function restartArrow(){
+	stroke(255);
+	strokeWeight(20);
+	noFill();
+	var S;
+	if (W>H){
+		S = H;
+	} else {
+		S = W;
 	}
-	
+	arc(W/2,H/2,S/3,S/3,45,320);
+	fill(255);
+	triangle(W/2+S/6-S/96,H/2-S/24,W/2+S/12,H/2-S/12,W/2+S/6,H/2-S/8);
 }
 
 function menu(){
@@ -256,17 +286,21 @@ function windowResized() {
   }
 }
 function mouseClicked(){
-	if (scene<2){
-		scene += 1;
+	if (finished && scene === 2){
+		initVar();
+		whichPic += 1;
 	} else {
-		checkScore();
-		eliminateTrials();
-// 		print(score);
+		if (scene<2){
+			scene += 1;
+		} else {
+			checkScore();
+			eliminateTrials();
+	// 		print(score);
+		}
+		if (avg===sq(picSize)){
+			scene = 1;
+			avg = 0;
+			finished = true;
+		}
 	}
-	if (avg===sq(picSize)){
-		scene = 1;
-		avg = 0;
-		finished = true;
-	}
-	
 }
